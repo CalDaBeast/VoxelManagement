@@ -1,0 +1,9 @@
+name: ${project.artifactId}
+main: com.thevoxelbox.voxelmanagement.VoxelManagement
+version: ${project.build.version}
+website: ${project.url}
+authors: [CalDaBeast]
+description: ${project.description}
+commands:
+  vm:
+    description: The main command for use with VoxelManagement.
