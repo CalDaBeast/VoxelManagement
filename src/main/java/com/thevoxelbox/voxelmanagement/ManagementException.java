@@ -1,5 +1,8 @@
 package com.thevoxelbox.voxelmanagement;
 
+/**
+ * @author CalDaBeast
+ */
 public class ManagementException extends Exception {
 
 	private final ExceptionType exceptionType;

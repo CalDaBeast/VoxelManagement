@@ -3,19 +3,20 @@ package com.thevoxelbox.voxelmanagement;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
 
+/**
+ * @author CalDaBeast
+ */
 public class PluginManagerWrapper {
 
 	private final SimplePluginManager manager;
 	private final List<Plugin> activePlugins;
 	private final Map<String, Plugin> lookupNames;
 	private final SimpleCommandMap commandMap;
-	private final Map<String, Command> knownCommands;
 
 	/**
 	 * @param pluginManager Bukkit's SimplePluginManager (via Bukkit.getPluginManager())
@@ -37,9 +38,6 @@ public class PluginManagerWrapper {
 			Field commandMapField = manager.getClass().getDeclaredField("commandMap");
 			commandMapField.setAccessible(true);
 			commandMap = (SimpleCommandMap) commandMapField.get(manager);
-			Field knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
-			knownCommandsField.setAccessible(true);
-			knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace(System.out);
 			throw new ManagementException(ExceptionType.OTHER, "Unable to access Bukkit's Plugin Manager.");
@@ -72,13 +70,6 @@ public class PluginManagerWrapper {
 	 */
 	public SimpleCommandMap getCommandMap() {
 		return commandMap;
-	}
-
-	/**
-	 * @return The map of Known Commands as contained by the SimplePluginManager
-	 */
-	public Map<String, Command> getKnownCommands() {
-		return knownCommands;
 	}
 	
 }
