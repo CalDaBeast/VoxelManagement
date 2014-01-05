@@ -17,12 +17,14 @@ public class VMCommand implements CommandExecutor {
 	private final LoadCommand load;
 	private final ReloadCommand reload;
 	private final ContinueCommand cont;
+	private final DownloadCommand download;
 	
 	public VMCommand(VoxelManagement management){
 		unload = new UnloadCommand(management);
 		load = new LoadCommand(management);
 		reload = new ReloadCommand(management);
 		cont = new ContinueCommand();
+		download = new DownloadCommand(management);
 	}
 	
 	@Override
@@ -30,8 +32,9 @@ public class VMCommand implements CommandExecutor {
 		if (args.length == 0) sendCommandHelp(cs);
 		else if (args[0].equalsIgnoreCase("unload")) unload.onCommand(cs, cmnd, label, args);
 		else if (args[0].equalsIgnoreCase("load")) load.onCommand(cs, cmnd, label, args);
-		else if (args[0].equalsIgnoreCase("reload")) reload.onCommand(cs, cmnd, label, args);
+		else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) reload.onCommand(cs, cmnd, label, args);
 		else if (args[0].equalsIgnoreCase("continue") || args[0].equalsIgnoreCase("c")) cont.onCommand(cs, cmnd, label, args);
+		else if (args[0].equalsIgnoreCase("download")) download.onCommand(cs, cmnd, label, args);
 		else sendCommandHelp(cs);
 		return true;
 	}
@@ -43,6 +46,7 @@ public class VMCommand implements CommandExecutor {
 		cs.sendMessage(VOXEL_MANAGEMENT + "/vm reload [plugin]");
 		cs.sendMessage(VOXEL_MANAGEMENT + "/vm check [plugin] (Incomplete)");
 		cs.sendMessage(VOXEL_MANAGEMENT + "/vm update [plugin] (Incomplete)");
+		cs.sendMessage(VOXEL_MANAGEMENT + "/vm download [plugin]");
 	}
 
 }
