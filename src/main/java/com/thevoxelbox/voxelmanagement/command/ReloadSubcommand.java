@@ -1,31 +1,37 @@
 package com.thevoxelbox.voxelmanagement.command;
 
+import com.caldabeast.commander.Subcommand;
+import com.caldabeast.commander.TabComplete;
 import com.thevoxelbox.voxelmanagement.ManagementException;
 import com.thevoxelbox.voxelmanagement.VoxelManagement;
 import static com.thevoxelbox.voxelmanagement.command.VMCommand.VOXEL_MANAGEMENT;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 /**
  * @author CalDaBeast
  */
-public class ReloadCommand implements CommandExecutor {
+public class ReloadSubcommand {
 
 	private final VoxelManagement management;
 
-	public ReloadCommand(VoxelManagement management) {
+	public ReloadSubcommand(VoxelManagement management) {
 		this.management = management;
 	}
 
-	@Override
-	public boolean onCommand(CommandSender cs, Command cmnd, String label, String[] args) {
-		if (args.length == 1) {
+	@Subcommand(
+			name = "reload",
+			alias = {"rl"}
+	)
+	public boolean onCommand(CommandSender cs, String label, String[] args) {
+		if (args.length == 0) {
 			cs.sendMessage(VOXEL_MANAGEMENT + "You must also include the name of the plugin.");
 			return true;
 		}
 		StringBuilder builder = new StringBuilder();
-		for (int i = 1; i < args.length; i++) {
+		for (int i = 0; i < args.length; i++) {
 			builder.append(args[i]).append(i != args.length - 1 ? " " : "");
 		}
 		String pluginName = builder.toString();
@@ -42,6 +48,20 @@ public class ReloadCommand implements CommandExecutor {
 			cs.sendMessage(VOXEL_MANAGEMENT + ex.getMessage());
 		}
 		return true;
+	}
+
+	@TabComplete(
+			name = "reload"
+	)
+	public List<String> onTabComplete(CommandSender cs, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> pluginNames = new ArrayList<>();
+			for (Plugin plugin : management.manager.getActivePlugins()) {
+				pluginNames.add(plugin.getName());
+			}
+			return pluginNames;
+		}
+		return null;
 	}
 
 }

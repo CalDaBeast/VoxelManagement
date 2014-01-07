@@ -1,32 +1,38 @@
 package com.thevoxelbox.voxelmanagement.command;
 
+import com.caldabeast.commander.Subcommand;
+import com.caldabeast.commander.TabComplete;
 import com.thevoxelbox.voxelmanagement.ManagementException;
 import com.thevoxelbox.voxelmanagement.VoxelManagement;
 import static com.thevoxelbox.voxelmanagement.command.VMCommand.VOXEL_MANAGEMENT;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 /**
  * @author CalDaBeast
  */
-public class UnloadCommand implements CommandExecutor {
+public class UnloadSubcommand {
 
 	private final VoxelManagement management;
 
-	public UnloadCommand(VoxelManagement management) {
+	public UnloadSubcommand(VoxelManagement management) {
 		this.management = management;
 	}
 
-	@Override
-	public boolean onCommand(final CommandSender cs, Command cmnd, String label, String[] args) {
-		if (args.length == 1) {
+	@Subcommand(
+			name = "unload",
+			alias = {"ul"}
+	)
+	public boolean onCommand(final CommandSender cs, String label, String[] args) {
+		if (args.length == 0) {
 			cs.sendMessage(VOXEL_MANAGEMENT + "You must also include the name of the plugin.");
 			return true;
 		}
 		StringBuilder builder = new StringBuilder();
-		for (int i = 1; i < args.length; i++) {
+		for (int i = 0; i < args.length; i++) {
 			builder.append(args[i]).append(i != args.length - 1 ? " " : "");
 		}
 		final String pluginName = builder.toString();
@@ -37,7 +43,7 @@ public class UnloadCommand implements CommandExecutor {
 		if (pluginName.equals("VoxelManagement")) {
 			cs.sendMessage(VOXEL_MANAGEMENT + "If you unload VoxelManagement, you will be unable to load it again without reloading or restarting the server.");
 			cs.sendMessage(VOXEL_MANAGEMENT + "Type " + ChatColor.ITALIC + "/vm continue" + ChatColor.GRAY + " if you are sure you would like to continue.");
-			ContinueCommand.savePlayer(cs.getName(), new Runnable() {
+			ContinueSubcommand.savePlayer(cs.getName(), new Runnable() {
 
 				@Override
 				public void run() {
@@ -59,6 +65,20 @@ public class UnloadCommand implements CommandExecutor {
 			cs.sendMessage(VOXEL_MANAGEMENT + ex.getMessage());
 		}
 		return true;
+	}
+
+	@TabComplete(
+			name = "unload"
+	)
+	public List<String> onTabComplete(CommandSender cs, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> pluginNames = new ArrayList<>();
+			for (Plugin plugin : management.manager.getActivePlugins()) {
+				pluginNames.add(plugin.getName());
+			}
+			return pluginNames;
+		}
+		return null;
 	}
 
 }

@@ -1,12 +1,11 @@
 package com.thevoxelbox.voxelmanagement.command;
 
+import com.caldabeast.commander.Subcommand;
 import static com.thevoxelbox.voxelmanagement.command.VMCommand.VOXEL_MANAGEMENT;
 import java.util.HashMap;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class ContinueCommand implements CommandExecutor {
+public class ContinueSubcommand {
 
 	private final static HashMap<String, Runnable> playerContinues = new HashMap<>();
 
@@ -24,8 +23,12 @@ public class ContinueCommand implements CommandExecutor {
 		cont.run();
 	}
 
-	@Override
-	public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings) {
+	@Subcommand(
+			name = "continue",
+			alias = {"c"}
+	
+	)
+	public boolean onCommand(CommandSender cs, String label, String[] args) {
 		String name = cs.getName();
 		if (playerSaved(name)) {
 			runPlayer(name);

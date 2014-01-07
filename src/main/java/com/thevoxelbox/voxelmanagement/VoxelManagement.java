@@ -1,6 +1,6 @@
 package com.thevoxelbox.voxelmanagement;
 
-import com.thevoxelbox.voxelmanagement.command.VMCommand;
+import com.thevoxelbox.voxelmanagement.command.*;
 import static com.thevoxelbox.voxelmanagement.command.VMCommand.VOXEL_MANAGEMENT;
 import java.io.*;
 import java.net.JarURLConnection;
@@ -25,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class VoxelManagement extends JavaPlugin {
 
-	private PluginManagerWrapper manager;
+	public PluginManagerWrapper manager;
 
 	@Override
 	public void onEnable() {
@@ -35,7 +35,14 @@ public class VoxelManagement extends JavaPlugin {
 			getLogger().log(Level.SEVERE, "Unable to load VoxelManagement. Bukkit's PluginManager could not be accessed.");
 			return;
 		}
-		this.getCommand("vm").setExecutor(new VMCommand(this));
+		VMCommand command = new VMCommand();
+		command.registerSubcommand(new ContinueSubcommand());
+		command.registerSubcommand(new DownloadSubcommand(this));
+		command.registerSubcommand(new LoadSubcommand(this));
+		command.registerSubcommand(new ReloadSubcommand(this));
+		command.registerSubcommand(new UnloadSubcommand(this));
+		this.getCommand("vm").setExecutor(command);
+		this.getCommand("vm").setTabCompleter(command);
 	}
 
 	/**
